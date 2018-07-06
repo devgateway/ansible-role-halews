@@ -1,0 +1,55 @@
+---
+- name: Install packages
+  package:
+    name:
+      - firewalld
+      - glusterfs-server
+      - nginx
+      - certbot
+      - python2-certbot-dns-route53
+
+- name: Enable firewall services
+  firewalld:
+    state: enabled
+    permanent: true
+    service: "{{ item }}"
+  loop:
+    - http
+    - https
+    - glusterfs
+
+- name: Create brick directory
+  file:
+    path: "{{ hlws_gluster_brick }}"
+    state: directory
+
+- name: Create GlusterFS volume
+  gluster_volume:
+    state: present
+    name: "{{ hlws_gluster_volume }}"
+    cluster: "{{ ansible_play_batch }}"
+    bricks: "{{ hlws_gluster_brick }}"
+    replicas: "{{ ansible_play_batch | length }}"
+  run_once: true
+
+- name: Configure AWS credentials
+  ini_file:
+    path: "{{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}"
+    create: true
+    mode: 0600
+    section: default
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict:
+    aws_access_key_id: "{{ hlws_aws_key_id }}"
+    aws_secret_access_key: "{{ hlws_aws_secret }}"
+  run_once: true
+  no_log: true
+
+- name: Install Nginx reload script
+  copy:
+    dest: "{{ hlws_nginx_reload_script }}"
+    mode: 0755
+    content: |
+      #!/bin/bash
+      /usr/sbin/nginx -t && /usr/bin/systemctl reload nginx.service
