@@ -1,0 +1,11 @@
+{%  macro hlws_mount_unit() %}
+{{    hlws_systemd_dir }}/{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount
+{%- endmacro %}
+[Unit]
+Description=Update Letsencrypt certificates
+Requires={{ hlws_mount_unit() }} network-online.target
+
+[Service]
+Type=oneshot
+Environment=AWS_CONFIG_FILE={{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}
+ExecStart=/usr/bin/certbot renew

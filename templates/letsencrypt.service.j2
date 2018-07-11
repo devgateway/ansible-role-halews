@@ -1,0 +1,8 @@
+[Unit]
+Description=Allow Letsencrypt updates
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/usr/bin/systemctl start {{ hlws_update_unit }}.timer
+ExecStop=/usr/bin/systemctl stop {{ hlws_update_unit }}.timer
