@@ -32,16 +32,21 @@
     replicas: "{{ ansible_play_batch | length }}"
   run_once: true
 
-- name: Install GlusterFS mount unit
+- name: Install Systemd units
   template:
-    src: mount.j2
-    dest: "{{ hlws_systemd_dir }}/{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
+    src: "{{ item.key }}.j2"
+    dest: "{{ hlws_systemd_dir }}/{{ item.value }}"
     mode: 0644
-  register: gluster_mount
+  with_dict:
+    mount: "{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
+    letsencrypt.service: letsencrypt.service
+    update-letsencrypt.service: "{{ hlws_update_unit }}.service"
+    update-letsencrypt.timer: "{{ hlws_update_unit }}.timer"
+  register: systemd_units
 
 - name: Reload Systemd daemon
   command: systemctl daemon-reload
-  when: gluster_mount.changed
+  when: systemd_units.changed
 
 - name: Configure AWS credentials
   ini_file:

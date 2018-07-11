@@ -1,9 +1,6 @@
-{%  macro hlws_mount_unit() %}
-{{    hlws_systemd_dir }}/{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount
-{%- endmacro %}
 [Unit]
 Description=Update Letsencrypt certificates
-Requires={{ hlws_mount_unit() }} network-online.target
+Requires={{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount network-online.target
 
 [Service]
 Type=oneshot
