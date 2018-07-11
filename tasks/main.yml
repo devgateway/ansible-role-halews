@@ -37,7 +37,11 @@
     src: mount.j2
     dest: "{{ hlws_systemd_dir }}/{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
     mode: 0644
-  notify: Reload Systemd daemon
+  register: gluster_mount
+
+- name: Reload Systemd daemon
+  command: systemctl daemon-reload
+  when: gluster_mount.changed
 
 - name: Configure AWS credentials
   ini_file:
