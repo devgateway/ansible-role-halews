@@ -32,6 +32,13 @@
     replicas: "{{ ansible_play_batch | length }}"
   run_once: true
 
+- name: Install GlusterFS mount unit
+  template:
+    src: mount.j2
+    dest: "{{ hlws_systemd_dir }}/{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
+    mode: 0644
+  notify: Reload Systemd daemon
+
 - name: Configure AWS credentials
   ini_file:
     path: "{{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}"

@@ -1,0 +1,12 @@
+[Unit]
+Description=Letsencrypt config directory
+Requires=glusterd.service remote-fs-pre.target local-fs.target
+
+[Mount]
+What=localhost:/{{ hlws_gluster_volume }}
+Where={{ hlws_letsencrypt_dir }}
+Type=glusterfs
+TimeoutSec=10
+
+[Install]
+WantedBy=multi-user.target
