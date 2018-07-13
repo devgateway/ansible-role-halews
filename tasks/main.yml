@@ -128,3 +128,41 @@
     lgrt_name: letsencrypt
     lgrt_path: "{{ hlws_letsencrypt_log }}"
     lgrt_config: {}
+
+- name: Configure Pacemaker
+  include_role:
+    name: devgateway.pacemaker
+  vars:
+    pacemaker_cluster_options:
+      no-quorum-policy: ignore
+      stonith-enabled: false
+    pacemaker_simple_resources:
+      nginx:
+        resource:
+          class: service
+          type: nginx
+        op:
+          - name: monitor
+            interval: 10s
+      virtualip:
+        resource:
+          class: ocf
+          provider: heartbeat
+          type: IPaddr2
+        options:
+          ip: "{{ hlws_virtual_ip }}"
+      letsencrypt:
+        resource:
+          class: service
+          type: letsencrypt
+    pacemaker_constraints:
+      - type: colocation
+        rsc: virtualip
+        with-rsc: nginx
+        score: INFINITY
+      - type: colocation
+        rsc: letsencrypt
+        with-rsc: nginx
+        score: INFINITY
+  tags:
+    - pacemaker
