@@ -1,5 +1,4 @@
 ---
-hlws_aws_ini: aws.ini
 hlws_letsencrypt_dir: /etc/letsencrypt
 hlws_nginx_reload_script: /usr/local/sbin/reload-nginx.sh
 hlws_gluster_brick: /srv/brick/letsencrypt

@@ -4,5 +4,5 @@ Requires={{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount network-online
 
 [Service]
 Type=oneshot
-Environment=AWS_CONFIG_FILE={{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}
+Environment=AWS_CONFIG_FILE={{ hlws_letsencrypt_dir }}/aws.ini
 ExecStart=/usr/bin/certbot renew

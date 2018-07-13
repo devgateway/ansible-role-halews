@@ -69,7 +69,7 @@
 
 - name: Configure AWS credentials
   ini_file:
-    path: "{{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}"
+    path: "{{ hlws_letsencrypt_dir }}/aws.ini"
     create: true
     mode: 0600
     section: default
