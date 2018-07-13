@@ -6,3 +6,4 @@ hlws_gluster_volume: letsencrypt
 hlws_systemd_dir: /etc/systemd/system
 hlws_update_unit: update-letsencrypt
 hlws_letsencrypt_staging: false
+hlws_letsencrypt_log: /var/log/letsencrypt/letsencrypt.log
