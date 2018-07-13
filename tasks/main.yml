@@ -48,6 +48,12 @@
   command: systemctl daemon-reload
   when: systemd_units.changed
 
+- name: Enable and start GlusterFS mount
+  service:
+    name: "{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
+    enabled: true
+    state: started
+
 - name: Configure AWS credentials
   ini_file:
     path: "{{ hlws_letsencrypt_dir }}/{{ hlws_aws_ini }}"
