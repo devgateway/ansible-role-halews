@@ -92,3 +92,21 @@
       /usr/sbin/nginx -t && /usr/bin/systemctl reload nginx.service
   tags:
     - letsencrypt
+
+- name: Configure Letsencrypt CLI
+  ini_file:
+    path: "{{ hlws_letsencrypt_dir }}/cli.ini"
+    section: null
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict:
+    staging: "true"
+    noninteractive: "true"
+    max-log-backups: 0
+    email: "{{ hlws_letsencrypt_email }}"
+    dns-route53: "true"
+    agree-tos: "true"
+    deploy-hook: "{{ hlws_nginx_reload_script }}"
+  run_once: true
+  tags:
+    - letsencrypt
