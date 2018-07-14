@@ -128,6 +128,27 @@
     lgrt_name: letsencrypt
     lgrt_path: "{{ hlws_letsencrypt_log }}"
     lgrt_config: {}
+  tags:
+    - letsencrypt
+
+- name: Initialize Letsencrypt certificate
+  environment:
+    AWS_CONFIG_FILE: "{{ hlws_letsencrypt_dir }}/aws.ini"
+  command: >
+    certbot certonly
+    --noninteractive
+    --agree-tos
+    --dns-route53
+    {% if hlws_letsencrypt_staging %}
+    --staging
+    {% endif %}
+    --domain {{ ('*.' ~ hlws_domain) | quote }}
+    --email {{ hlws_letsencrypt_email }}
+  args:
+    creates: "{{ hlws_letsencrypt_dir }}/live/{{ hlws_domain }}/fullchain.pem"
+  run_once: true
+  tags:
+    - letsencrypt
 
 - name: Configure Pacemaker
   include_role:
