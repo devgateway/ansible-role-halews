@@ -150,6 +150,14 @@
   tags:
     - letsencrypt
 
+- name: Generate random Diffie-Hellmann params
+  command: openssl dhparam -out {{ hlws_dhparam }} {{ hlws_dhparam_bits }}
+  args:
+    creates: "{{ hlws_dhparam }}"
+  notify: Reload Nginx
+  tags:
+    - nginx
+
 - name: Configure Pacemaker
   include_role:
     name: devgateway.pacemaker
