@@ -158,6 +158,16 @@
   tags:
     - nginx
 
+- name: Configure Nginx
+  include_role:
+    name: devgateway.nginx
+    tasks_from: nginx
+  vars:
+    ngx_settings: "{{ hlws_ngx_settings }}"
+  notify: Reload Nginx
+  tags:
+    - nginx
+
 - name: Configure Pacemaker
   include_role:
     name: devgateway.pacemaker

@@ -7,3 +7,42 @@ hlws_systemd_dir: /etc/systemd/system
 hlws_update_unit: update-letsencrypt
 hlws_letsencrypt_staging: false
 hlws_letsencrypt_log: /var/log/letsencrypt/letsencrypt.log
+hlws_dhparam: /etc/pki/tls/misc/dhparam.pem
+hlws_dhparam_bits: 2048
+hlws_ngx_settings:
+  main:
+    user:
+      RedHat: nginx
+    worker_processes: auto
+    error_log:
+      - /var/log/nginx/error.log
+      - error
+    pid: /var/run/nginx.pid
+  events:
+    worker_connections: 1024
+  http:
+    log_format:
+      proxy: >-
+        [$time_local]
+        $status
+        $server_name
+        $proxy_host
+        "$request_method
+        $request_uri"
+    access_log:
+      /var/log/nginx/access.log: proxy
+    sendfile: true
+    gzip: true
+    ssl_certificate: "{{ hlws_letsencrypt_dir }}/live/{{ hlws_domain }}/fullchain.pem"
+    ssl_certificate_key: "{{ hlws_letsencrypt_dir }}/live/{{ hlws_domain }}/privkey.pem"
+    ssl_dhparam: "{{ hlws_dhparam }}"
+    ssl_session_timeout: 5m
+    ssl_protocols:
+      - TLSv1
+      - TLSv1.1
+      - TLSv1.2
+    ssl_ciphers: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
+    ssl_prefer_server_ciphers: on
+    ssl_session_cache: shared:SSL:10m
+    proxy_set_header:
+      Host: "$http_host"
