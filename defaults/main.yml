@@ -9,7 +9,8 @@ hlws_letsencrypt_staging: false
 hlws_letsencrypt_log: /var/log/letsencrypt/letsencrypt.log
 hlws_dhparam: /etc/pki/tls/misc/dhparam.pem
 hlws_dhparam_bits: 2048
-hlws_ngx_settings:
+hlws_ngx_settings: {}
+hlws_ngx_defaults:
   main:
     user:
       RedHat: nginx

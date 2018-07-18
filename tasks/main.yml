@@ -163,7 +163,7 @@
     name: devgateway.nginx
     tasks_from: nginx
   vars:
-    ngx_settings: "{{ hlws_ngx_settings }}"
+    ngx_settings: "{{ hlws_ngx_defaults | combine(hlws_ngx_settings, recursive = true) }}"
   notify: Reload Nginx
   tags:
     - nginx
