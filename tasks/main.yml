@@ -142,10 +142,15 @@
     {% if hlws_letsencrypt_staging %}
     --staging
     {% endif %}
-    --domain {{ ('*.' ~ hlws_domain) | quote }}
+    {% for domain in hlws_domains %}
+    --domain {{ ('*.' ~ domain) | quote }}
+    {% endfor %}
     --email {{ hlws_letsencrypt_email }}
   args:
-    creates: "{{ hlws_letsencrypt_dir }}/live/{{ hlws_domain }}/fullchain.pem"
+    creates: "{{ hlws_letsencrypt_dir }}/live/{{ each_domain }}/fullchain.pem"
+  loop: "{{ hlws_domains }}"
+  loop_control:
+    loop_var: each_domain
   run_once: true
   tags:
     - letsencrypt
