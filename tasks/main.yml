@@ -88,7 +88,6 @@
   include_role:
     name: devgateway.pacemaker
   vars:
-    pacemaker_cluster_name: "{{ hlws_cluster_name }}"
     pacemaker_cluster_options:
       no-quorum-policy: ignore
       stonith-enabled: false
