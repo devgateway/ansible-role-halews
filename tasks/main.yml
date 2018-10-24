@@ -67,9 +67,22 @@
     tasks_from: nginx
   vars:
     ngx_settings: "{{ hlws_ngx_defaults | combine(hlws_ngx_settings, recursive = true) }}"
-  notify: Reload Nginx
+  notify:
+    - Test Nginx configuration
+    - Reload Nginx
   tags:
     - nginx
+
+- name: Generate random Diffie-Hellmann params
+  command: >-
+    openssl dhparam
+    -out {{ hlws_dhparam | quote }}
+    {{ hlws_dhparam_bits }}
+  args:
+    creates: "{{ hlws_dhparam }}"
+  notify:
+    - Reload Nginx
+  tags: [nginx]
 
 - name: Configure Pacemaker
   include_role:
