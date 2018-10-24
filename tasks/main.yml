@@ -23,6 +23,14 @@
     - high-availability
   tags: [firewall]
 
+- name: Configure GlusterFS
+  include_role:
+    name: devgateway.glusterfs
+  vars:
+    glfs_mount_point: "{{ hlws_letsencrypt_dir }}"
+    glfs_volume: "{{ hlws_gluster_volume }}"
+  tags: [glusterfs]
+
 - name: Create brick directory
   file:
     path: "{{ hlws_gluster_brick }}"
