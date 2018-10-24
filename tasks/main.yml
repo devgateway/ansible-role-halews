@@ -40,36 +40,26 @@
       /usr/sbin/nginx -t && /usr/bin/systemctl reload nginx.service
   tags: [nginx, letsencrypt]
 
-- name: Install Systemd units
-  template:
-    src: "{{ item.key }}.j2"
-    dest: "{{ hlws_systemd_dir }}/{{ item.value }}"
-    mode: 0644
-  with_dict:
-    mount: "{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
-    letsencrypt.service: letsencrypt.service
-    update-letsencrypt.service: "{{ hlws_update_unit }}.service"
-    update-letsencrypt.timer: "{{ hlws_update_unit }}.timer"
-  register: systemd_units
-  tags:
-    - glusterfs
-    - systemd
-
-- name: Reload Systemd daemon
-  command: systemctl daemon-reload
-  when: systemd_units.changed
-  tags:
-    - glusterfs
-    - systemd
-
-- name: Enable and start GlusterFS mount
-  service:
-    name: "{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
-    enabled: true
-    state: started
-  tags:
-    - glusterfs
-    - systemd
+- name: Configure Letsencrypt
+  include_role:
+    name: devgateway.letsencrypt
+  vars:
+    le_enable_timer: false
+    le_email: "{{ hlws_letsencrypt_email }}"
+    le_service_requires:
+      - "{{ hlws_letsencrypt_dir[1:] | replace('/', '-') }}.mount"
+    le_deploy_hook: "{{ hlws_nginx_reload_script }}"
+    le_unit_name: "{{ hlws_update_unit }}"
+    le_domains: "{{ hlws_domains }}"
+    le_plugin: "{{ hlws_letsencrypt_plugin }}"
+    le_plugin_settings: "{{ hlws_letsencrypt_plugin_settings }}"
+    # buggy Ansible, fixed in 2.7
+    lgrt_name: letsencrypt
+    lgrt_path: /var/log/letsencrypt/letsencrypt.log
+    lgrt_config: {}
+  notify:
+    - Reload Nginx
+  tags: [letsencrypt, live]
 
 - name: Configure AWS credentials
   ini_file:

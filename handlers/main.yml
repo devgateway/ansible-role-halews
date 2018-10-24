@@ -1,4 +1,7 @@
 ---
+- name: Test Nginx configuration
+  command: nginx -t
+
 - name: Reload Nginx
   service:
     name: nginx

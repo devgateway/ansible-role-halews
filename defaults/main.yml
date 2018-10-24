@@ -59,3 +59,7 @@ hlws_ngx_defaults:
     ssl_session_cache: shared:SSL:10m
     proxy_set_header:
       Host: "$http_host"
+hlws_letsencrypt_plugin: webroot
+hlws_letsencrypt_plugin_settings:
+  webroot:
+    directory: "{{ hlws_letsencrypt_dir }}/public_html"
