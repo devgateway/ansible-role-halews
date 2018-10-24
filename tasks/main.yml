@@ -31,24 +31,6 @@
     glfs_volume: "{{ hlws_gluster_volume }}"
   tags: [glusterfs]
 
-- name: Create brick directory
-  file:
-    path: "{{ hlws_gluster_brick }}"
-    state: directory
-  tags:
-    - glusterfs
-
-- name: Create GlusterFS volume
-  gluster_volume:
-    state: present
-    name: "{{ hlws_gluster_volume }}"
-    cluster: "{{ ansible_play_batch }}"
-    bricks: "{{ hlws_gluster_brick }}"
-    replicas: "{{ ansible_play_batch | length }}"
-  run_once: true
-  tags:
-    - glusterfs
-
 - name: Install Systemd units
   template:
     src: "{{ item.key }}.j2"
