@@ -34,20 +34,16 @@ hlws_ngx_defaults:
       /var/log/nginx/access.log: proxy
     sendfile: true
     gzip: true
-    ssl_certificate: |-
-      {% filter replace('\n', '/') -%}
-      {{ hlws_letsencrypt_dir }}
-      live
-      {{ hlws_domains | first }}
-      fullchain.pem
-      {%- endfilter -%}
+    ssl_certificate: >-
+      {{ '%(path)s/live/%(domain)s/fullchain.pem' | format(
+      path = hlws_letsencrypt_dir,
+      domain = hlws_domains | first | replace('*.', '')
+      ) }}
     ssl_certificate_key: |-
-      {% filter replace('\n', '/') -%}
-      {{ hlws_letsencrypt_dir }}
-      live
-      {{ hlws_domains | first }}
-      privkey.pem
-      {%- endfilter -%}
+      {{ '%(path)s/live/%(domain)s/privkey.pem' | format(
+      path = hlws_letsencrypt_dir,
+      domain = hlws_domains | first | replace('*.', '')
+      ) }}
     ssl_dhparam: "{{ hlws_dhparam }}"
     ssl_session_timeout: 5m
     ssl_protocols:
