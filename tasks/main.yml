@@ -61,6 +61,17 @@
     - Reload Nginx
   tags: [letsencrypt, live]
 
+- name: Generate random Diffie-Hellmann params
+  command: >-
+    openssl dhparam
+    -out {{ hlws_dhparam | quote }}
+    {{ hlws_dhparam_bits }}
+  args:
+    creates: "{{ hlws_dhparam }}"
+  notify:
+    - Reload Nginx
+  tags: [nginx]
+
 - name: Configure Nginx
   include_role:
     name: devgateway.nginx
@@ -72,17 +83,6 @@
     - Reload Nginx
   tags:
     - nginx
-
-- name: Generate random Diffie-Hellmann params
-  command: >-
-    openssl dhparam
-    -out {{ hlws_dhparam | quote }}
-    {{ hlws_dhparam_bits }}
-  args:
-    creates: "{{ hlws_dhparam }}"
-  notify:
-    - Reload Nginx
-  tags: [nginx]
 
 - name: Configure Pacemaker
   include_role:
