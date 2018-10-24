@@ -31,6 +31,15 @@
     glfs_volume: "{{ hlws_gluster_volume }}"
   tags: [glusterfs]
 
+- name: Install Nginx reload script
+  copy:
+    dest: "{{ hlws_nginx_reload_script }}"
+    mode: 0755
+    content: |
+      #!/bin/bash
+      /usr/sbin/nginx -t && /usr/bin/systemctl reload nginx.service
+  tags: [nginx, letsencrypt]
+
 - name: Install Systemd units
   template:
     src: "{{ item.key }}.j2"
@@ -75,16 +84,6 @@
     aws_secret_access_key: "{{ hlws_aws_secret }}"
   run_once: true
   no_log: true
-  tags:
-    - letsencrypt
-
-- name: Install Nginx reload script
-  copy:
-    dest: "{{ hlws_nginx_reload_script }}"
-    mode: 0755
-    content: |
-      #!/bin/bash
-      /usr/sbin/nginx -t && /usr/bin/systemctl reload nginx.service
   tags:
     - letsencrypt
 
