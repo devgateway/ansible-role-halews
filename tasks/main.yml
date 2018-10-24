@@ -1,22 +1,27 @@
 ---
-- name: Install packages
+- name: Install Firewalld
   package:
-    name:
-      - firewalld
-      - glusterfs-server
-      - nginx
-      - certbot
-      - python2-certbot-dns-route53
+    name: firewalld
+  tags: [firewall]
 
-- name: Enable firewall services
+- name: Start Firewalld
+  service:
+    name: firewalld
+    state: started
+  tags: [firewall]
+
+- name: Open ports in the firewall
   firewalld:
     state: enabled
     permanent: true
+    immediate: true
     service: "{{ item }}"
   loop:
+    - glusterfs
     - http
     - https
-    - glusterfs
+    - high-availability
+  tags: [firewall]
 
 - name: Create brick directory
   file:
