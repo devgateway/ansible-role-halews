@@ -59,3 +59,4 @@ hlws_letsencrypt_plugin: webroot
 hlws_letsencrypt_plugin_settings:
   webroot:
     directory: "{{ hlws_letsencrypt_dir }}/public_html"
+hlws_resource_monitor_interval: 10s

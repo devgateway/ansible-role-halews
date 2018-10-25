@@ -98,7 +98,7 @@
           type: nginx
         op:
           - name: monitor
-            interval: 10s
+            interval: "{{ hlws_resource_monitor_interval }}"
       virtualip:
         resource:
           class: ocf
@@ -106,13 +106,16 @@
           type: IPaddr2
         options:
           ip: "{{ hlws_virtual_ip }}"
+        op:
+          - name: monitor
+            interval: "{{ hlws_resource_monitor_interval }}"
       letsencrypt:
         resource:
           class: service
           type: letsencrypt
-            op:
-              - name: monitor
-                interval: 10s
+        op:
+          - name: monitor
+            interval: "{{ hlws_resource_monitor_interval }}"
     pacemaker_constraints:
       - type: colocation
         rsc: nginx
